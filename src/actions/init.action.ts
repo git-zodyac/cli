@@ -1,6 +1,9 @@
+import { Initializer } from "../services/init.service.js";
+import { throwError } from "../view/errors.view.js";
 import { Action } from "../utils/action/action.js";
 import { input } from "@inquirer/prompts";
-import chalk from "chalk";
+import { join } from "path";
+import { InitInput } from "services/init.config.js";
 
 export class Initialize extends Action {
   async init() {
@@ -8,12 +11,13 @@ export class Initialize extends Action {
       .command("init")
       .description("Initialize new project")
       .option("-p, --project <name>", "Project name")
+      .option("--skip-eslint", "Skip eslint configuration")
+      .option("--skip-git", "Skip git initialization")
+      .option("--skip-docker", "Skip creating Dockerfile")
       .action((args) => this.execute(args));
   }
 
-  async execute(args: { project?: string }) {
-    console.log(args);
-
+  async execute(args: InitInput) {
     if (!args.project) {
       args.project = await askProjectName();
     } else if (!args.project.match(/^[a-zA-Z_-]{1,255}$/i)) {
@@ -21,11 +25,14 @@ export class Initialize extends Action {
     }
 
     if (!args.project) {
-      console.log(chalk.red("No project name provided"));
-      return;
+      return throwError("No project name provided");
     }
 
-    console.log("init", args.project, this.cwd);
+    const path = join(this.cwd, args.project);
+    const worker = new Initializer(path, args.project, args);
+
+    const { success } = await worker.createProject();
+    if (!success) return;
   }
 }
 

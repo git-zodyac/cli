@@ -1,5 +1,6 @@
 import { join } from "path";
 import { Action } from "../utils/action/action.js";
+import { returnSuccess } from "../view/success.view.js";
 
 export class Generate extends Action {
   init() {
@@ -14,6 +15,7 @@ export class Generate extends Action {
 
   async execute(type: string, path: string) {
     const output_path = join(this.cwd, path);
-    console.log(type, output_path);
+    console.log(output_path);
+    returnSuccess(`Added ${type}`);
   }
 }
