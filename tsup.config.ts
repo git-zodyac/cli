@@ -2,9 +2,8 @@ import { defineConfig } from "tsup";
 
 export default defineConfig({
   entry: ["src/public-api.ts"],
-  format: ["cjs", "esm"],
-  dts: true,
+  format: ["cjs"],
   splitting: false,
-  sourcemap: true,
+  sourcemap: false,
   clean: true,
 });
