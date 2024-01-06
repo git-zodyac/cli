@@ -4,6 +4,6 @@ export default defineConfig({
   entry: ["src/public-api.ts"],
   format: ["esm"],
   splitting: false,
-  sourcemap: false,
+  sourcemap: true,
   clean: true,
 });

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { Application } from "./utils/app/app.js";
 import { Initialize } from "./actions/init.action.js";
 import { AddModule } from "./actions/add.action.js";
