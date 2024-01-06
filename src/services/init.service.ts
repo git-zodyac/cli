@@ -19,7 +19,7 @@ import { eslintJson } from "../schemas/eslint.json.js";
 import { gitignore } from "../schemas/gitignore.js";
 import { dockerfile } from "../schemas/docker.js";
 import { tsconfig } from "../schemas/tsconfig.js";
-// import { major_version } from "../config.js";
+import { major_version } from "../config.js";
 
 export class Initializer {
   private progress: Ora = ora("Initializing project");
@@ -79,10 +79,10 @@ export class Initializer {
         build: "tsc", // TODO: zy build
       },
       dependencies: {
-        // TODO: "@zodyac/core": `^${major_version}.0.0`,
+        "@zodyac/core": `^${major_version}.0.0`,
       },
       devDependencies: {
-        // TODO: "@zodyac/cli": `^${major_version}.0.0`,
+        "@zodyac/cli": `^${major_version}.0.0`,
         ...devDeps,
       },
     };
