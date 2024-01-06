@@ -1,6 +1,6 @@
 {
   "name": "@zodyac/cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A CLI tooling for Zodyac framework.",
   "scripts": {
     "build": "tsup",
@@ -14,6 +14,9 @@
   "files": [
     "dist"
   ],
+  "bin": {
+    "zy": "./dist/public-api.js"
+  },
   "keywords": [
     "cli",
     "zodyac",
