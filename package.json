@@ -1,20 +1,18 @@
 {
   "name": "@zodyac/cli",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "A CLI tooling for Zodyac framework.",
   "scripts": {
-    "build": "tsup",
-    "test": "ts-node --esm ./src/public-api.ts"
+    "build": "tsup"
   },
   "type": "module",
-  "main": "./dist/public-api.js",
-  "module": "./dist/public-api.mjs",
-  "types": "./dist/public-api.d.ts",
   "private": false,
   "files": [
     "dist"
   ],
-  "bin": "./dist/public-api.js",
+  "bin": {
+    "zy": "dist/public-api.js"
+  },
   "keywords": [
     "cli",
     "zodyac",
