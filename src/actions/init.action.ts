@@ -1,9 +1,10 @@
-import { Initializer } from "../services/init.service.js";
+import { Initializer } from "../services/init/init.service.js";
+import { InitInput } from "../services/init/init.config.js";
+import { Adder } from "../services/add/add.service.js";
 import { throwError } from "../view/errors.view.js";
 import { Action } from "../utils/action/action.js";
-import { input } from "@inquirer/prompts";
+import { input, confirm } from "@inquirer/prompts";
 import { join } from "path";
-import { InitInput } from "services/init.config.js";
 
 export class Initialize extends Action {
   async init() {
@@ -11,6 +12,7 @@ export class Initialize extends Action {
       .command("init")
       .description("Initialize new project")
       .option("-p, --project <name>", "Project name")
+      .option("-r, --router", "Wheater to add router module (Express)")
       .option("--skip-eslint", "Skip eslint configuration")
       .option("--skip-git", "Skip git initialization")
       .option("--skip-docker", "Skip creating Dockerfile")
@@ -24,6 +26,13 @@ export class Initialize extends Action {
       args.project = await askProjectName();
     }
 
+    if (args.router == undefined) {
+      const useRouter = await addRouterPrompt();
+      args.router = useRouter ? "express" : undefined;
+    } else {
+      args.router = "express"; // TODO: Ask for router type
+    }
+
     if (!args.project) {
       return throwError("No project name provided");
     }
@@ -31,12 +40,19 @@ export class Initialize extends Action {
     const path = join(this.cwd, args.project);
     const worker = new Initializer(path, args.project, args);
 
-    const { success } = await worker.createProject();
-    if (!success) return;
+    const prj = await worker.createProject();
+    if (!prj) return;
+
+    if (args.router) {
+      const adder = new Adder(path);
+      await adder.initialize();
+      const res = await adder.addRouter();
+      if (!res) return;
+    }
   }
 }
 
-async function askProjectName() {
+async function askProjectName(): Promise<string | undefined> {
   try {
     return await input({
       message: "What will be the project name?",
@@ -49,5 +65,15 @@ async function askProjectName() {
     });
   } catch (e) {
     return undefined;
+  }
+}
+async function addRouterPrompt(): Promise<boolean> {
+  try {
+    return await confirm({
+      message: "Would you like to add router module?",
+      default: true,
+    });
+  } catch (e) {
+    return false;
   }
 }

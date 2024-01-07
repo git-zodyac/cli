@@ -2,24 +2,30 @@ import { InitOptions } from "./init.config.js";
 
 // CLI
 import ora, { Ora } from "ora";
-import { throwError } from "../view/errors.view.js";
-import { returnNotice } from "../view/success.view.js";
+import { throwError } from "../../view/errors.view.js";
+import { returnNotice } from "../../view/success.view.js";
 import chalk from "chalk";
 
 // Workers
-import { createFolder } from "../utils/files/folders.js";
-import { createFile, createJSON } from "../utils/files/files.js";
-import { NodePackages } from "../utils/helpers/npm.utils.js";
-import { GitHelper } from "../utils/helpers/git.utils.js";
+import { createFolder } from "../../utils/files/folders.js";
+import { writeFile, writeJSON } from "../../utils/files/files.js";
+import { NodePackages } from "../../utils/helpers/npm.utils.js";
+import { GitHelper } from "../../utils/helpers/git.utils.js";
 
 // Schemas
-import { PackageJson, devDeps, elsintDeps } from "../schemas/package.json.js";
-import { editorconfig } from "../schemas/editorconfig.js";
-import { eslintJson } from "../schemas/eslint.json.js";
-import { gitignore } from "../schemas/gitignore.js";
-import { dockerfile } from "../schemas/docker.js";
-import { tsconfig } from "../schemas/tsconfig.js";
-import { major_version } from "../config.js";
+import {
+  PackageJson,
+  devDeps,
+  elsintDeps,
+} from "../../schemas/init/package.json.js";
+import { ProjectConfig } from "../../schemas/init/project.json.js";
+import { editorconfig } from "../../schemas/init/editorconfig.js";
+import { eslintJson } from "../../schemas/init/eslint.json.js";
+import { gitignore } from "../../schemas/init/gitignore.js";
+import { dockerfile } from "../../schemas/init/docker.js";
+import { tsconfig } from "../../schemas/init/tsconfig.js";
+import { major_version } from "../../config.js";
+import { Project } from "../project.js";
 
 export class Initializer {
   private progress: Ora = ora("Initializing project");
@@ -35,6 +41,7 @@ export class Initializer {
       this.progress.start("Creating project files");
       await this.createFolder();
       const pkg = await this.createPackageJson();
+      await this.createProjectConfig();
       await this.createTsConfig();
       await this.createSourceFolder();
       await this.createEditorConfig();
@@ -48,14 +55,12 @@ export class Initializer {
       if (!this.opts.skipDocker) await this.addDocker();
 
       this.progress.succeed("Project initialized");
-      return { success: true };
+      return new Project(this.root);
     } catch (e: unknown) {
       this.progress.fail("Failed to initialize project");
       throwError(e as string);
 
-      return {
-        success: false,
-      };
+      return undefined;
     }
   }
 
@@ -97,17 +102,31 @@ export class Initializer {
       pkg.author = user;
     }
 
-    await createJSON(`${this.root}/package.json`, pkg);
+    await writeJSON(`${this.root}/package.json`, pkg);
 
     this.progress.text = "package.json created";
 
     return pkg;
   }
 
+  async createProjectConfig() {
+    this.progress.text = "Creating zodyac.json";
+
+    const prj: ProjectConfig = {
+      name: this.name,
+      router: this.opts.router ?? "",
+      core_version: parseInt(major_version),
+    };
+
+    await writeJSON(`${this.root}/zodyac.json`, prj);
+
+    this.progress.text = "zodyac.json created";
+  }
+
   async createTsConfig() {
     this.progress.text = "Creating tsconfig.json";
 
-    await createJSON(`${this.root}/tsconfig.json`, tsconfig);
+    await writeJSON(`${this.root}/tsconfig.json`, tsconfig);
 
     this.progress.text = "tsconfig.json created";
   }
@@ -123,7 +142,7 @@ export class Initializer {
   async createEditorConfig() {
     this.progress.text = "Creating Editor config";
 
-    await createFile(`${this.root}/.editorconfig`, editorconfig);
+    await writeFile(`${this.root}/.editorconfig`, editorconfig);
 
     this.progress.text = "Editor config created";
   }
@@ -140,7 +159,7 @@ export class Initializer {
     try {
       this.progress.start("Adding eslint");
 
-      await createJSON(`${this.root}/.eslintrc.json`, eslintJson);
+      await writeJSON(`${this.root}/.eslintrc.json`, eslintJson);
 
       await NodePackages.installDev(this.root, elsintDeps);
 
@@ -159,7 +178,7 @@ export class Initializer {
     try {
       this.progress.start("Initializing git");
 
-      await createFile(`${this.root}/.gitignore`, gitignore);
+      await writeFile(`${this.root}/.gitignore`, gitignore);
       await GitHelper.init(this.root);
       await GitHelper.addAll(this.root);
 
@@ -177,7 +196,7 @@ export class Initializer {
   async addDocker() {
     this.progress.text = "Creating Dockerfile";
 
-    await createFile(`${this.root}/Dockerfile`, dockerfile);
+    await writeFile(`${this.root}/Dockerfile`, dockerfile);
 
     this.progress.text = "Dockerfile created";
   }

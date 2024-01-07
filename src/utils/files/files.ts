@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
 
-export async function createJSON<T extends object>(
+export async function writeJSON<T extends object>(
   path: string,
   obj: T,
 ): Promise<true> {
@@ -8,12 +8,21 @@ export async function createJSON<T extends object>(
   return true;
 }
 
-export async function createFile(
+export async function writeFile(
   path: string,
   content: string | Buffer,
 ): Promise<true> {
   await fs.writeFile(path, content);
   return true;
+}
+
+export async function readFile<T>(path: string): Promise<T | undefined> {
+  try {
+    const content = await fs.readFile(path, "utf-8");
+    return JSON.parse(content);
+  } catch (e) {
+    return undefined;
+  }
 }
 
 export async function deleteFile(path: string): Promise<true> {
