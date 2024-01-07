@@ -1,4 +1,8 @@
+import { zAddModule } from "./validators/module.validator.js";
+import { Adder } from "../services/add/add.service.js";
+import { throwError } from "../view/errors.view.js";
 import { Action } from "../utils/action/action.js";
+import { ZProject } from "../services/project.js";
 
 export class AddModule extends Action {
   init() {
@@ -11,6 +15,13 @@ export class AddModule extends Action {
   }
 
   async execute(module: string) {
-    console.log(module);
+    const mod = zAddModule.safeParse(module);
+    if (!mod.success) return throwError("No such module:" + module);
+
+    const project = await ZProject.parse(this.cwd);
+    if (!project) return throwError("Could not find Zodyac project");
+
+    const worker = new Adder(project);
+    await worker[mod.data]();
   }
 }

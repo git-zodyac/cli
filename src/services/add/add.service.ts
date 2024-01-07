@@ -1,49 +1,86 @@
-import { NodePackages } from "../../utils/helpers/npm.utils.js";
+import { createFolder } from "../../utils/files/folders.js";
+import { addExpress } from "./helpers/express.helper.js";
+import { returnNotice } from "../../view/success.view.js";
 import { throwError } from "../../view/errors.view.js";
-import { major_version } from "../../config.js";
-import { Project } from "../project.js";
+import { ZProject } from "../project.js";
 import ora, { Ora } from "ora";
+import chalk from "chalk";
+
+// Helpers
+import { InitDocker } from "./helpers/docker.init.js";
+import { InitEslint } from "./helpers/eslint.init.js";
+import { InitGit } from "./helpers/git.init.js";
 
 export class Adder {
   private progress: Ora = ora("Initializing project");
 
-  private _prj!: Project;
+  constructor(public readonly project: ZProject) {}
 
-  constructor(private readonly root: string) {}
-
-  async initialize() {
+  async express() {
     try {
-      this._prj = new Project(this.root);
-      await this._prj.parse();
+      this.progress.start("Adding Express module");
+      // TODO: check if same router module is installed
+
+      this.project.config.router = "express";
+      await this.project.save();
+
+      this.progress.start("Installing dependencies...");
+      await addExpress(this.project.root);
+      this.progress.succeed("Express module added");
+
+      await createFolder(this.project.src_path("routes"));
+      await createFolder(this.project.src_path("services"));
+      await createFolder(this.project.src_path("views"));
     } catch (e: unknown) {
-      console.error("Failed to read project config");
+      this.progress.fail("Failed to add express router");
       throwError(e as string);
-      return false;
     }
   }
 
-  async addRouter() {
+  async eslint() {
     try {
-      this.progress.start("Adding router module");
-      if (!this._prj.config.router) await this._prj.setRouter("express");
+      this.progress.start("Adding eslint");
 
-      await NodePackages.install(this.root, {
-        express: "latest",
-        "@zodyac/express-module": `^${major_version}.0.0`,
-      });
+      await InitEslint(this.project.root);
 
-      await NodePackages.installDev(this.root, {
-        "@types/express": "latest",
-      });
-
-      this.progress.succeed("Router module added");
-
-      return true;
-    } catch (e: unknown) {
-      this.progress.fail("Failed to add router module");
+      this.progress.succeed("Eslint added");
+    } catch (e) {
+      this.progress.fail("Could not add eslint");
       throwError(e as string);
+      returnNotice(
+        `You can skip adding eslint by adding ${chalk.blue("--skip-eslint")}:`,
+        "zy init --skip-eslint",
+      );
+    }
+  }
 
-      return false;
+  async git() {
+    try {
+      this.progress.start("Initializing git");
+      await InitGit(this.project.root);
+      this.progress.succeed("Git initialized");
+    } catch (e) {
+      this.progress.fail("Could not initialize Git");
+      throwError(e as string);
+      returnNotice(
+        `You can creating Git by adding ${chalk.blue("--skip-git")}:`,
+        "zy init --skip-git",
+      );
+    }
+  }
+
+  async docker() {
+    try {
+      this.progress.start("Creating Dockerfile");
+      await InitDocker(this.project.root);
+      this.progress.succeed("Dockerfile created");
+    } catch (e) {
+      this.progress.fail("Could not create Dockerfile");
+      throwError(e as string);
+      returnNotice(
+        `You can creating Dockerfile by adding ${chalk.blue("--skip-docker")}:`,
+        "zy init --skip-docker",
+      );
     }
   }
 }

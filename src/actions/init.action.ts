@@ -1,4 +1,5 @@
 import { Initializer } from "../services/init/init.service.js";
+import { zProjectName } from "./validators/init.validator.js";
 import { InitInput } from "../services/init/init.config.js";
 import { Adder } from "../services/add/add.service.js";
 import { throwError } from "../view/errors.view.js";
@@ -38,17 +39,17 @@ export class Initialize extends Action {
     }
 
     const path = join(this.cwd, args.project);
-    const worker = new Initializer(path, args.project, args);
+    const worker = new Initializer(path, args.project);
 
     const prj = await worker.createProject();
     if (!prj) return;
 
-    if (args.router) {
-      const adder = new Adder(path);
-      await adder.initialize();
-      const res = await adder.addRouter();
-      if (!res) return;
-    }
+    const adder = new Adder(prj);
+
+    if (args.router) await adder.express();
+    if (!args.skipEslint) await adder.eslint();
+    if (!args.skipDocker) await adder.docker();
+    if (!args.skipGit) await adder.git();
   }
 }
 
@@ -57,9 +58,8 @@ async function askProjectName(): Promise<string | undefined> {
     return await input({
       message: "What will be the project name?",
       validate: (value) => {
-        if (value.length < 3) return "Please enter a project name";
-        if (!value.match(/^[a-zA-Z_-]{1,255}$/i))
-          return "Project name must be alphabetic, underscore, or hyphen";
+        const res = zProjectName.safeParse(value);
+        if (!res.success) return res.error.message;
         return true;
       },
     });

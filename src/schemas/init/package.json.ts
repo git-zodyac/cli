@@ -1,3 +1,5 @@
+import { DIST_ENTRYPOINT } from "./project.json.js";
+
 export interface PackageJson {
   name: string;
   version: string;
@@ -10,6 +12,10 @@ export interface PackageJson {
   devDependencies: Record<string, string>;
 }
 
+export const DEPS = {
+  zod: "^3.0.0",
+};
+
 export const devDeps = {
   typescript: "^5.3.3",
 };
@@ -21,3 +27,28 @@ export const elsintDeps = {
   "eslint-plugin-prettier": "^5.1.0",
   prettier: "^3.1.1",
 };
+
+export function packageJSON(
+  name: string,
+  major_version: number | string,
+): PackageJson {
+  return {
+    name,
+    version: "0.0.1",
+    description: "A new amazing Zodyac project",
+    main: DIST_ENTRYPOINT,
+    keywords: [],
+    scripts: {
+      start: `node ${DIST_ENTRYPOINT}`,
+      build: "tsc",
+    },
+    dependencies: {
+      "@zodyac/core": `^${major_version}.0.0`,
+      ...DEPS,
+    },
+    devDependencies: {
+      "@zodyac/cli": `^${major_version}.0.0`,
+      ...devDeps,
+    },
+  };
+}
