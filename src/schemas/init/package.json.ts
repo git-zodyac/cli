@@ -8,6 +8,7 @@ export interface PackageJson {
   author?: string;
   scripts: Record<string, string>;
   keywords: string[];
+  type: "module";
   dependencies: Record<string, string>;
   devDependencies: Record<string, string>;
 }
@@ -37,6 +38,7 @@ export function packageJSON(
     version: "0.0.1",
     description: "A new amazing Zodyac project",
     main: DIST_ENTRYPOINT,
+    type: "module",
     keywords: [],
     scripts: {
       start: `node ${DIST_ENTRYPOINT}`,

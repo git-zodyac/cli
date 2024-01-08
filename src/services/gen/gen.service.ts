@@ -1,9 +1,12 @@
-import ora from "ora";
-import { ZProject } from "../project.js";
+import { CreateModule } from "../../schemas/gen/module.schema.js";
+import { ProvideInModule } from "../helpers/module.provide.js";
+import { ProvideInRoot } from "../helpers/root.provide.js";
 import { throwError } from "../../view/errors.view.js";
 import { fileAdded } from "../../view/file.view.js";
+import { ZProject } from "../project.js";
+import { join, relative } from "path";
 import chalk from "chalk";
-import { join } from "path";
+import ora from "ora";
 
 interface GeneratorResult {
   name: string;
@@ -15,15 +18,53 @@ export class Generator {
 
   constructor(private readonly project: ZProject) {}
 
-  async module(name: string): Promise<GeneratorResult | undefined> {
+  async module(
+    name: string,
+    opts: { provide?: string } = {},
+  ): Promise<GeneratorResult | undefined> {
     const m_name = name.capitalize() + "Module";
-    const path = join("modules", name + ".module.ts");
+    const path = join("modules", name, name + ".module.ts");
+    const abs_path = this.project.src_path(path);
 
     try {
       this.progress.start(`Adding module ${display(name)}`);
 
+      await CreateModule(this.project.ts, abs_path, m_name);
+
       this.progress.succeed(`Module ${display(name)} added`);
       fileAdded(`${path}\n`);
+
+      if (opts.provide) {
+        this.progress.start(
+          `Providing module ${display(name)} to ${chalk.blue(opts.provide)}`,
+        );
+
+        if (opts.provide === "root") {
+          const import_path = "./" + path.replace(".ts", ".js");
+          await ProvideInRoot(this.project, m_name, [
+            {
+              modules: [m_name],
+              path: import_path,
+            },
+          ]);
+        } else {
+          const module_path = this.project.src_path(opts.provide);
+          const module_folder = join(module_path, "..");
+          const relative_path = relative(module_folder, abs_path);
+          const import_path = relative_path.replace(".ts", ".js");
+
+          await ProvideInModule(this.project, module_path, m_name, [
+            {
+              modules: [m_name],
+              path: import_path,
+            },
+          ]);
+        }
+
+        this.progress.succeed(
+          `Module ${display(name)} provided to ${chalk.blue(opts.provide)}`,
+        );
+      }
 
       return { name: m_name, path };
     } catch (error) {

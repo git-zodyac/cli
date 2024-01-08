@@ -54,8 +54,6 @@ export class Generate extends Action {
   }
 
   async module(name: string, opts?: { provide?: string }) {
-    console.log(opts);
-
     const valid = zModuleName.safeParse(name);
     if (!valid.success) {
       throwError(valid.error.errors[0].message);
@@ -66,8 +64,24 @@ export class Generate extends Action {
     const project = await ZProject.parse(this.cwd);
     if (!project) return throwError("Could not find Zodyac project");
 
+    if (!opts) {
+      opts = { provide: "root" };
+    } else if (!opts.provide) {
+      opts.provide = "root";
+    } else if (opts.provide !== "root") {
+      if (opts.provide.startsWith(".")) {
+        opts.provide = opts.provide.slice(1);
+      }
+      if (opts.provide.startsWith("/")) {
+        opts.provide = opts.provide.slice(1);
+      }
+      if (opts.provide.startsWith("src")) {
+        opts.provide = opts.provide.slice(4);
+      }
+    }
+
     const worker = new Generator(project);
-    await worker.module(name);
+    await worker.module(name, opts);
   }
 
   async router(name: string, opts?: { nest?: string }) {
