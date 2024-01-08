@@ -1,7 +1,9 @@
+import { RoutesSchema } from "../../schemas/gen/router.schema.js";
 import { ModuleSchema } from "../../schemas/gen/module.schema.js";
 import { GenerateFile } from "../../utils/code-gen/generate.file.js";
 import { ProvideInModule } from "../../utils/code-gen/module.provide.js";
 import { ProvideInRoot } from "../../utils/code-gen/root.provide.js";
+import { ProvideInRouter } from "./helpers/express.routes.js";
 import { throwError } from "../../view/errors.view.js";
 import { fileAdded } from "../../view/file.view.js";
 import { ZProject } from "../project.js";
@@ -21,7 +23,7 @@ export class Generator {
 
   async module(
     name: string,
-    opts: { provide?: string } = {},
+    opts: { provide?: string } = { provide: "root" },
   ): Promise<GeneratorResult | undefined> {
     const m_name = name.capitalize() + "Module";
     const path = join("modules", name, name + ".module.ts");
@@ -42,7 +44,7 @@ export class Generator {
         );
 
         if (opts.provide === "root") {
-          const import_path = "./" + path.replace(".ts", ".js");
+          const import_path = path.replace(".ts", "");
           await ProvideInRoot(this.project, m_name, [
             {
               modules: [m_name],
@@ -53,7 +55,7 @@ export class Generator {
           const module_path = this.project.src_path(opts.provide);
           const module_folder = join(module_path, "..");
           const relative_path = relative(module_folder, abs_path);
-          const import_path = relative_path.replace(".ts", ".js");
+          const import_path = relative_path.replace(".ts", "");
 
           await ProvideInModule(this.project, module_path, m_name, [
             {
@@ -75,15 +77,45 @@ export class Generator {
     }
   }
 
-  async router(name: string): Promise<GeneratorResult | undefined> {
-    const r_name = name.capitalize() + "Router";
-    const path = join("routers", name + ".router.ts");
+  async router(
+    name: string,
+    opts: { nest?: string } = { nest: "root" },
+  ): Promise<GeneratorResult | undefined> {
+    const r_name = name.toLocaleLowerCase().trim() + "_routes";
+    const path = join("routers", name, name + ".router.ts");
+    const abs_path = this.project.src_path(path);
+
     try {
       this.progress.start(`Adding router ${display(name)}`);
+
+      const schema = RoutesSchema(r_name);
+      await GenerateFile(this.project, abs_path, schema);
 
       this.progress.succeed(`Router ${display(name)} added`);
       fileAdded(`${path}\n`);
 
+      if (opts.nest) {
+        this.progress.start(
+          `Providing router ${display(name)} to ${chalk.blue(opts.nest)}`,
+        );
+
+        if (opts.nest === "root") opts.nest = "app.router.ts";
+
+        const router_path = this.project.src_path(opts.nest);
+        const routes_folder = join(router_path, "..");
+        const relative_path = relative(routes_folder, abs_path);
+        const import_path = relative_path.replace(".ts", "");
+
+        await ProvideInRouter(this.project, router_path, r_name, [
+          {
+            modules: [r_name],
+            path: import_path,
+          },
+        ]);
+        this.progress.succeed(
+          `Router ${display(name)} provided to ${chalk.blue(opts.nest)}`,
+        );
+      }
       return { name: r_name, path };
     } catch (error) {
       this.progress.fail("Failed to add router");

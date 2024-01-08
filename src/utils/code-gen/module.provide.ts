@@ -10,27 +10,25 @@ export async function ProvideInModule(
 ) {
   const { ts } = prj;
 
-  const module = ts.getSourceFileOrThrow(target_path);
-  const decorator = module
+  const file = ts.getSourceFileOrThrow(target_path);
+  const decorator = file
     .getFirstChildByKindOrThrow(SyntaxKind.ClassDeclaration)
     .getDecorator("Provide");
 
   for (const { modules, path } of imports) {
-    module.addImportDeclaration({
+    file.addImportDeclaration({
       moduleSpecifier: path,
       namedImports: modules,
     });
   }
 
   if (!decorator) {
-    module.addImportDeclaration({
+    file.addImportDeclaration({
       moduleSpecifier: "@zodyac/core",
       namedImports: ["Provide"],
     });
 
-    const target = module.getFirstChildByKindOrThrow(
-      SyntaxKind.ClassDeclaration,
-    );
+    const target = file.getFirstChildByKindOrThrow(SyntaxKind.ClassDeclaration);
 
     target.addDecorator({
       name: "Provide",
@@ -52,8 +50,8 @@ export async function ProvideInModule(
     }
   }
 
-  module.formatText();
-  await module.save();
+  file.formatText();
+  await file.save();
 
   if (prj.config?.has_eslint) await runLint(prj.root);
 }

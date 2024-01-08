@@ -28,7 +28,7 @@ export class Adder {
       await addExpress(this.project);
       this.progress.succeed("Express module added");
 
-      await createFolder(this.project.src_path("routes"));
+      await createFolder(this.project.src_path("routers"));
       await createFolder(this.project.src_path("services"));
       await createFolder(this.project.src_path("views"));
     } catch (e: unknown) {

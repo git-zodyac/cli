@@ -5,12 +5,14 @@ import { throwError } from "../view/errors.view.js";
 import { ZProject } from "../services/project.js";
 import { input, select } from "@inquirer/prompts";
 import { ModuleAction } from "./generate/module.action.js";
-import { RouterAction } from "./generate/router.action.js";
+import { RouterAction } from "./generate/routes.action.js";
 import { GuardAction } from "./generate/guard.action.js";
 import { ServiceAction } from "./generate/service.action.js";
 import { ViewAction } from "./generate/view.action.js";
 import { CrudAction } from "./generate/crud.action.js";
 import { ModelAction } from "./generate/model.action.js";
+import { returnNotice } from "../view/success.view.js";
+import chalk from "chalk";
 
 export class Generate extends Action {
   init() {
@@ -68,25 +70,15 @@ export class Generate extends Action {
       opts = { provide: "root" };
     } else if (!opts.provide) {
       opts.provide = "root";
-    } else if (opts.provide !== "root") {
-      if (opts.provide.startsWith(".")) {
-        opts.provide = opts.provide.slice(1);
-      }
-      if (opts.provide.startsWith("/")) {
-        opts.provide = opts.provide.slice(1);
-      }
-      if (opts.provide.startsWith("src")) {
-        opts.provide = opts.provide.slice(4);
-      }
     }
+
+    opts.provide = stripPath(opts.provide!);
 
     const worker = new Generator(project);
     await worker.module(name, opts);
   }
 
   async router(name: string, opts?: { nest?: string }) {
-    console.log(opts);
-
     const valid = zModuleName.safeParse(name);
     if (!valid.success) {
       throwError(valid.error.errors[0].message);
@@ -97,8 +89,25 @@ export class Generate extends Action {
     const project = await ZProject.parse(this.cwd);
     if (!project) return throwError("Could not find Zodyac project");
 
+    if (!project.config.router) {
+      throwError("You first need to add API engine to your project.");
+      returnNotice(
+        `Run ${chalk.blue("zy add express")} to add Express.`,
+        "zy add express",
+      );
+      return;
+    }
+
+    if (!opts) {
+      opts = { nest: "root" };
+    } else if (!opts.nest) {
+      opts.nest = "root";
+    }
+
+    opts.nest = stripPath(opts.nest!);
+
     const worker = new Generator(project);
-    await worker.router(name);
+    await worker.router(name, opts);
   }
 
   async guard(name: string) {
@@ -243,4 +252,18 @@ async function askName() {
   } catch (error) {
     return undefined;
   }
+}
+
+function stripPath(path: string) {
+  if (path.startsWith(".")) {
+    path = path.slice(1);
+  }
+  if (path.startsWith("/")) {
+    path = path.slice(1);
+  }
+  if (path.startsWith("src")) {
+    path = path.slice(4);
+  }
+
+  return path;
 }
