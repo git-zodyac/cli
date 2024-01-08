@@ -18,4 +18,9 @@ export const tsconfig = {
   },
   include: ["src/**/*"],
   exclude: ["dist", "node_modules"],
+  "tsc-alias": {
+    baseUrl: "./src",
+    resolveFullPaths: true,
+    paths: {},
+  },
 };

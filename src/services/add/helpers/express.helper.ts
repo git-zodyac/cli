@@ -2,7 +2,7 @@ import { eDeps, eDevDeps } from "../../../schemas/add/router.schema.js";
 import { NodePackages } from "../../../utils/helpers/npm.utils.js";
 import { ER_SCHEMA } from "../../../schemas/add/express.schema.js";
 import { runLint } from "../../../utils/helpers/eslint.utils.js";
-import { GenerateFile } from "../../../utils/code-gen/create.module.js";
+import { GenerateFile } from "../../../utils/code-gen/generate.file.js";
 import { ProvideInRoot } from "../../../utils/code-gen/root.provide.js";
 import { ZProject } from "../../project.js";
 
@@ -17,7 +17,7 @@ export async function addExpress(prj: ZProject) {
   await ProvideInRoot(prj, "ExpressApp.routes(routes)", [
     {
       modules: ["routes"],
-      path: "./app.router.js",
+      path: "app.router",
     },
     {
       modules: ["ExpressApp"],

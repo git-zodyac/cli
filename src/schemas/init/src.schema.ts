@@ -41,7 +41,7 @@ export const ZODYAC_SRC_FILES: Record<
     },
     {
       kind: StructureKind.ImportDeclaration,
-      moduleSpecifier: "./env.z.js",
+      moduleSpecifier: "env.z",
       namedImports: ["zEnv"],
     },
     "\n",
@@ -60,7 +60,7 @@ export const ZODYAC_SRC_FILES: Record<
   "main.ts": [
     {
       kind: StructureKind.ImportDeclaration,
-      moduleSpecifier: "./app.module.js",
+      moduleSpecifier: "app.module",
       namedImports: ["app"],
     },
     "\n",

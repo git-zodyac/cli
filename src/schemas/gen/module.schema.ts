@@ -1,5 +1,5 @@
 import { StructureKind } from "ts-morph";
-import { TModuleSchema } from "../../utils/code-gen/create.module";
+import { TModuleSchema } from "../../utils/code-gen/generate.file";
 
 export function ModuleSchema(className: string): TModuleSchema {
   return [
@@ -15,7 +15,7 @@ export function ModuleSchema(className: string): TModuleSchema {
     },
     {
       kind: StructureKind.ImportDeclaration,
-      moduleSpecifier: "../../env.z.js",
+      moduleSpecifier: "env.z",
       namedImports: [
         {
           kind: StructureKind.ImportSpecifier,

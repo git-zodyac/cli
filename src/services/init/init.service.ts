@@ -2,7 +2,7 @@ import { major_version } from "../../config.js";
 import { ZProject } from "../project.js";
 
 // CLI
-import ora, { Ora } from "ora";
+import ora from "ora";
 import { throwError } from "../../view/errors.view.js";
 
 // Workers
@@ -10,7 +10,7 @@ import { createFolder } from "../../utils/files/folders.js";
 import { writeJSON } from "../../utils/files/files.js";
 import { NodePackages } from "../../utils/helpers/npm.utils.js";
 import { runLint } from "../../utils/helpers/eslint.utils.js";
-import { GenerateFile } from "../../utils/code-gen/create.module.js";
+import { GenerateFile } from "../../utils/code-gen/generate.file.js";
 
 // Helpers
 import { InitEC } from "./helpers/editorconfig.init.js";
@@ -22,7 +22,7 @@ import { SRC_FOLDER } from "../../schemas/init/project.json.js";
 import { ZODYAC_SRC_FILES } from "../../schemas/init/src.schema.js";
 
 export class Initializer {
-  private progress: Ora = ora("Initializing project");
+  private progress = ora("Initializing project");
 
   constructor(
     private readonly root: string,

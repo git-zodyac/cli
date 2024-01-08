@@ -19,6 +19,7 @@ export const DEPS = {
 
 export const devDeps = {
   typescript: "^5.3.3",
+  "tsc-alias": "latest",
 };
 
 export const elsintDeps = {

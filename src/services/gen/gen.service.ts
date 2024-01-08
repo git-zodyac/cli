@@ -1,5 +1,5 @@
 import { ModuleSchema } from "../../schemas/gen/module.schema.js";
-import { GenerateFile } from "../../utils/code-gen/create.module.js";
+import { GenerateFile } from "../../utils/code-gen/generate.file.js";
 import { ProvideInModule } from "../../utils/code-gen/module.provide.js";
 import { ProvideInRoot } from "../../utils/code-gen/root.provide.js";
 import { throwError } from "../../view/errors.view.js";

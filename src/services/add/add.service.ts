@@ -3,8 +3,8 @@ import { addExpress } from "./helpers/express.helper.js";
 import { returnNotice } from "../../view/success.view.js";
 import { throwError } from "../../view/errors.view.js";
 import { ZProject } from "../project.js";
-import ora, { Ora } from "ora";
 import chalk from "chalk";
+import ora from "ora";
 
 // Helpers
 import { InitDocker } from "./helpers/docker.init.js";
@@ -12,7 +12,7 @@ import { InitEslint } from "./helpers/eslint.init.js";
 import { InitGit } from "./helpers/git.init.js";
 
 export class Adder {
-  private progress: Ora = ora("Initializing project");
+  private progress = ora("Initializing project");
 
   constructor(public readonly project: ZProject) {}
 

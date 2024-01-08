@@ -35,6 +35,8 @@
     "figlet": "^1.7.0",
     "ora": "^8.0.1",
     "ts-morph": "^21.0.1",
+    "tsc-alias": "^1.8.8",
+    "typescript": "^5.3.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -45,7 +47,6 @@
     "eslint": "^8.56.0",
     "eslint-plugin-prettier": "^5.1.0",
     "prettier": "^3.1.1",
-    "tsup": "^8.0.1",
-    "typescript": "^5.3.3"
+    "tsup": "^8.0.1"
   }
 }
