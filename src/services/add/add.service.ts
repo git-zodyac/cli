@@ -25,7 +25,7 @@ export class Adder {
       await this.project.save();
 
       this.progress.start("Installing dependencies...");
-      await addExpress(this.project.root);
+      await addExpress(this.project);
       this.progress.succeed("Express module added");
 
       await createFolder(this.project.src_path("routes"));
@@ -33,7 +33,7 @@ export class Adder {
       await createFolder(this.project.src_path("views"));
     } catch (e: unknown) {
       this.progress.fail("Failed to add express router");
-      throwError(e as string);
+      throwError(e as string, true);
     }
   }
 
@@ -46,7 +46,7 @@ export class Adder {
       this.progress.succeed("Eslint added");
     } catch (e) {
       this.progress.fail("Could not add eslint");
-      throwError(e as string);
+      throwError(e as string, true);
       returnNotice(
         `You can skip adding eslint by adding ${chalk.blue("--skip-eslint")}:`,
         "zy init --skip-eslint",
@@ -61,7 +61,7 @@ export class Adder {
       this.progress.succeed("Git initialized");
     } catch (e) {
       this.progress.fail("Could not initialize Git");
-      throwError(e as string);
+      throwError(e as string, true);
       returnNotice(
         `You can creating Git by adding ${chalk.blue("--skip-git")}:`,
         "zy init --skip-git",
@@ -76,7 +76,7 @@ export class Adder {
       this.progress.succeed("Dockerfile created");
     } catch (e) {
       this.progress.fail("Could not create Dockerfile");
-      throwError(e as string);
+      throwError(e as string, true);
       returnNotice(
         `You can creating Dockerfile by adding ${chalk.blue("--skip-docker")}:`,
         "zy init --skip-docker",

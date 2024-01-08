@@ -5,26 +5,35 @@ import {
   VariableDeclarationKind,
 } from "ts-morph";
 
-const DEF_ZENV = `z.object({ PORT: z.number().default(3000), /* ... add your environment variables here */ })`;
+export const DEF_ROUTER = `Routes([
+  {
+    path: '/',
+    method: 'get',
+    handler: (req, res) => {
+      return res.send('Hello, Zodyac!');
+    },
+  },
+])`;
 
-export const ZODYAC_SRC_FILES: Record<
+export const ER_SCHEMA: Record<
   string,
   OptionalKind<SourceFileStructure>["statements"]
 > = {
-  "env.z.ts": [
+  "app.router.ts": [
     {
       kind: StructureKind.ImportDeclaration,
-      moduleSpecifier: "zod",
-      namedImports: ["z"],
+      moduleSpecifier: "@zodyac/express-core",
+      namedImports: ["Routes"],
     },
+    "\n",
     {
       kind: StructureKind.VariableStatement,
       declarationKind: VariableDeclarationKind.Const,
       isExported: true,
       declarations: [
         {
-          name: "zEnv",
-          initializer: DEF_ZENV,
+          name: "routes",
+          initializer: DEF_ROUTER,
         },
       ],
     },

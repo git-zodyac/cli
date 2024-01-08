@@ -59,7 +59,7 @@ async function askProjectName(): Promise<string | undefined> {
       message: "What will be the project name?",
       validate: (value) => {
         const res = zProjectName.safeParse(value);
-        if (!res.success) return res.error.message;
+        if (!res.success) return res.error.errors[0].message;
         return true;
       },
     });

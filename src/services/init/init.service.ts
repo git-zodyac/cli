@@ -17,7 +17,9 @@ import { InitTSConfig } from "./helpers/tsconfig.init.js";
 // Schemas
 import { packageJSON } from "../../schemas/init/package.json.js";
 import { SRC_FOLDER } from "../../schemas/init/project.json.js";
-import { ZODYAC_SRC_FILES } from "../../schemas/init/zodyac.schema.js";
+import { ZODYAC_SRC_FILES } from "../../schemas/init/src.schema.js";
+
+// TODO: replace ts-morph with native ts AST
 
 export class Initializer {
   private progress: Ora = ora("Initializing project");
@@ -61,7 +63,7 @@ export class Initializer {
       return prj;
     } catch (e: unknown) {
       this.progress.fail("Failed to initialize project");
-      throwError(e as string);
+      throwError(e as string, true);
 
       return undefined;
     }
@@ -86,17 +88,14 @@ export class Initializer {
   }
 
   async addSourceFiles(prj: ZProject) {
+    await createFolder(prj.src_path("modules"));
+    await createFolder(prj.src_path("models"));
+
     const { ts } = prj;
 
     for (const [name, statements] of Object.entries(ZODYAC_SRC_FILES)) {
       const file = ts.createSourceFile(prj.src_path(name), { statements });
       await file.save();
     }
-
-    ts.createSourceFile(
-      prj.entryPoint,
-      `import { App } from "@zodyac/core";
-      `,
-    );
   }
 }

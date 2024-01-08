@@ -5,7 +5,7 @@ export function returnSuccess(message: string): void {
 }
 
 export function returnNotice(message: string, command?: string): void {
-  console.log(chalk.yellow("i"), message);
+  console.log(chalk.yellow(">"), message);
 
   if (command) console.log("\n", chalk.blue(">\t", command), "\n");
 }
