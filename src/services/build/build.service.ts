@@ -78,9 +78,18 @@ export class Builder {
 
   private runner?: ChildProcess;
   private createRunner() {
-    this.runner = spawn("node", ["dist/main"], {
-      stdio: "inherit",
+    this.runner = spawn("node", ["dist/main.js"], {
+      stdio: ["inherit", "inherit", "pipe"],
       cwd: this.project.root,
+    });
+
+    this.runner.stderr?.on("data", (e) => {
+      console.error(chalk.redBright(`! Runtime error:`));
+      console.error(e.toString());
+    });
+    this.runner.on("exit", (code) => {
+      if (code === 0) return;
+      console.error(chalk.redBright(`Process exited with code ${code}`));
     });
     return this.runner;
   }
@@ -97,6 +106,7 @@ export class Builder {
       fs.watch(this.project.root, { recursive: true }, async (e, file) => {
         if (!file) return;
         if (!file.endsWith(".ts")) return;
+        if (file.startsWith("dist")) return;
 
         this.runner?.kill();
 
