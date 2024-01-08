@@ -1,8 +1,8 @@
 import { eslintJson } from "../../../schemas/init/eslint.json.js";
 import { PackageJson, elsintDeps } from "../../../schemas/init/package.json.js";
-import { NodePackages } from "../../../utils/helpers/npm.utils.js";
-import { runCommand } from "../../../utils/helpers/runner.js";
 import { readFile, writeJSON } from "../../../utils/files/files.js";
+import { NodePackages } from "../../../utils/helpers/npm.utils.js";
+import { runLint } from "../../../utils/helpers/eslint.utils.js";
 
 export async function InitEslint(root: string) {
   const pkg = await readFile<PackageJson>(`${root}/package.json`);
@@ -13,5 +13,5 @@ export async function InitEslint(root: string) {
   pkg.scripts.lint = "eslint . --ext .ts --fix";
   await writeJSON(`${root}/package.json`, pkg);
 
-  await runCommand(root, "eslint", ["--fix", "."]);
+  await runLint(root);
 }

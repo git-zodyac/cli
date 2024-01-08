@@ -42,6 +42,8 @@ export class Adder {
       this.progress.start("Adding eslint");
 
       await InitEslint(this.project.root);
+      this.project.config.has_eslint = true;
+      await this.project.save();
 
       this.progress.succeed("Eslint added");
     } catch (e) {

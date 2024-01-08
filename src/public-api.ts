@@ -12,4 +12,9 @@ app.add(Initialize);
 app.add(AddModule);
 app.add(Generate);
 app.add(ExtList);
+// TODO: add build
+// TODO: add test
+// TODO: add watch
 app.run();
+
+// TODO: migrate from "ts-morph" to native ts AST

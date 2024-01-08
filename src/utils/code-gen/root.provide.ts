@@ -1,4 +1,5 @@
-import { ZProject } from "../project.js";
+import { runLint } from "../helpers/eslint.utils.js";
+import { ZProject } from "../../services/project.js";
 import { SyntaxKind } from "ts-morph";
 
 export async function ProvideInRoot(
@@ -33,4 +34,6 @@ export async function ProvideInRoot(
 
   app.formatText();
   await app.save();
+
+  if (prj.config?.has_eslint) await runLint(prj.root);
 }

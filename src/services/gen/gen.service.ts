@@ -1,6 +1,7 @@
-import { CreateModule } from "../../schemas/gen/module.schema.js";
-import { ProvideInModule } from "../helpers/module.provide.js";
-import { ProvideInRoot } from "../helpers/root.provide.js";
+import { ModuleSchema } from "../../schemas/gen/module.schema.js";
+import { GenerateFile } from "../../utils/code-gen/create.module.js";
+import { ProvideInModule } from "../../utils/code-gen/module.provide.js";
+import { ProvideInRoot } from "../../utils/code-gen/root.provide.js";
 import { throwError } from "../../view/errors.view.js";
 import { fileAdded } from "../../view/file.view.js";
 import { ZProject } from "../project.js";
@@ -29,7 +30,8 @@ export class Generator {
     try {
       this.progress.start(`Adding module ${display(name)}`);
 
-      await CreateModule(this.project.ts, abs_path, m_name);
+      const schema = ModuleSchema(m_name);
+      await GenerateFile(this.project, abs_path, schema);
 
       this.progress.succeed(`Module ${display(name)} added`);
       fileAdded(`${path}\n`);
