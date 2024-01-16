@@ -1,6 +1,6 @@
 {
   "name": "@zodyac/cli",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "A CLI tool for Zodyac framework.",
   "homepage": "https://zodyac.dev",
   "scripts": {

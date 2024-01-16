@@ -16,6 +16,7 @@ zy --help
 
 Initializes a new Zodyac project in the current directory.
 Generates a `package.json` file and installs the latest version of Zodyac.
+
 Options:
 - `-p, --project <name>`: The name of the project.
 - `-r, --router`: Whether to generate a router module.
@@ -23,18 +24,23 @@ Options:
 - `--skip-git`: Skips Git initialization.
 - `--skip-docker`: Skips creating Dockerfile.
 
-### `zy build`
-Builds the current Zodyac project.
-
 ### `zy serve`
 Serves the current Zodyac project.
 
+### `zy build`
+Builds the current Zodyac project.
+
+### `zy watch`
+Watches the current Zodyac project for changes and checks for errors.
+
 ### `zy generate <type> <name>`
 Generates a new Zodyac module.
+
 Options:
 - `type`: The type of module to generate. Can be one of `module`, `router`, ~~`service`~~, ~~`model`~~ or ~~`crud`~~.
-> Note: Only `module` and `router` are currently supported.
 - `name`: The name of the module/router to generate.
+
+> Note: Only `module` and `router` are currently supported.
 
 ### `zy add <type>`
 Adds an extention to the current project. You can add:
