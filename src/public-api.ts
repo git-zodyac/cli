@@ -15,8 +15,8 @@ app.add(Initialize);
 app.add(AddModule);
 app.add(Generate);
 app.add(ExtList);
-app.add(Build); // TODO: add build
-app.add(Watch); // TODO: add watch
+app.add(Build);
+app.add(Watch);
 app.add(Serve);
 // TODO: add test
 app.run();

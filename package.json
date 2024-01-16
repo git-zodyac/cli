@@ -1,8 +1,8 @@
 {
   "name": "@zodyac/cli",
-  "version": "1.0.15",
-  "description": "A CLI tooling for Zodyac framework.",
-  "homepage": "https://zodyac.dev/cli",
+  "version": "1.0.16",
+  "description": "A CLI tool for Zodyac framework.",
+  "homepage": "https://zodyac.dev",
   "scripts": {
     "build": "tsup"
   },
