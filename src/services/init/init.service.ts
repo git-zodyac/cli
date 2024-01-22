@@ -1,4 +1,4 @@
-import { major_version } from "../../config.js";
+import { is_beta, major_version } from "../../config.js";
 import { ZProject } from "../project.js";
 
 // CLI
@@ -72,7 +72,7 @@ export class Initializer {
   async createPackageJson() {
     this.progress.text = "Creating package.json";
 
-    const pkg = packageJSON(this.name, major_version);
+    const pkg = packageJSON(this.name, major_version, is_beta);
 
     const user = await NodePackages.currentUser(this.root);
     if (user) {

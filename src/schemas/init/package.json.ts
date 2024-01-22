@@ -33,7 +33,9 @@ export const elsintDeps = {
 export function packageJSON(
   name: string,
   major_version: number | string,
+  isBeta: boolean,
 ): PackageJson {
+  const core = isBeta ? `^${major_version}.0.0-beta` : `^${major_version}.0.0`;
   return {
     name,
     version: "0.0.1",
@@ -46,11 +48,11 @@ export function packageJSON(
       build: "tsc",
     },
     dependencies: {
-      "@zodyac/core": `^${major_version}.0.0`,
+      "@zodyac/core": core,
       ...DEPS,
     },
     devDependencies: {
-      "@zodyac/cli": `^${major_version}.0.0`,
+      "@zodyac/cli": "^1.0.0", // TODO: `^${major_version}.0.0`,
       ...devDeps,
     },
   };

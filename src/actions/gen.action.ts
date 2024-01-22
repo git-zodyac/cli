@@ -79,6 +79,10 @@ export class Generate extends Action {
   }
 
   async router(name: string, opts?: { nest?: string }) {
+    throw new Error(
+      "Creating routers is not supported by this version of CLI.",
+    );
+
     const valid = zModuleName.safeParse(name);
     if (!valid.success) {
       throwError(valid.error.errors[0].message);
@@ -111,6 +115,8 @@ export class Generate extends Action {
   }
 
   async guard(name: string) {
+    throw new Error("Creating guards is not supported by this version of CLI.");
+
     const valid = zModuleName.safeParse(name);
     if (!valid.success) {
       throwError(valid.error.errors[0].message);
@@ -143,7 +149,8 @@ export class Generate extends Action {
   }
 
   async view(name: string, opts?: { service?: string }) {
-    console.log(opts);
+    throw new Error("Creating view is not supported by this version of CLI.");
+
     const valid = zModuleName.safeParse(name);
     if (!valid.success) {
       throwError(valid.error.errors[0].message);
@@ -159,6 +166,8 @@ export class Generate extends Action {
   }
 
   async crud(name: string) {
+    throw new Error("Creating CRUD is not supported by this version of CLI.");
+
     const valid = zModuleName.safeParse(name);
     if (!valid.success) {
       throwError(valid.error.errors[0].message);
@@ -199,38 +208,38 @@ async function askType(): Promise<GenerateType | undefined> {
           value: "module",
           description: "A module is an independent part of the application",
         },
-        {
-          name: "Router",
-          value: "router",
-          description: "A router is a module that handles requests",
-        },
-        {
-          name: "Guard",
-          value: "guard",
-          description:
-            "A guard is a module that handles request permissions, e.g. authentication",
-        },
-        {
-          name: "Service",
-          value: "service",
-          description:
-            "A service is a module that handles business logic, e.g. operates models",
-        },
-        {
-          name: "View",
-          value: "view",
-          description: "A view is a module that forms a response",
-        },
-        {
-          name: "Model",
-          value: "model",
-          description: "A model is a representation of an entity, e.g. Task",
-        },
-        {
-          name: "Crud",
-          value: "crud",
-          description: "Creates model, service, router and view",
-        },
+        // TODO: {
+        //   name: "Router",
+        //   value: "router",
+        //   description: "A router is a module that handles requests",
+        // },
+        // {
+        //   name: "Guard",
+        //   value: "guard",
+        //   description:
+        //     "A guard is a module that handles request permissions, e.g. authentication",
+        // },
+        // {
+        //   name: "Service",
+        //   value: "service",
+        //   description:
+        //     "A service is a module that handles business logic, e.g. operates models",
+        // },
+        // {
+        //   name: "View",
+        //   value: "view",
+        //   description: "A view is a module that forms a response",
+        // },
+        // {
+        //   name: "Model",
+        //   value: "model",
+        //   description: "A model is a representation of an entity, e.g. Task",
+        // },
+        // {
+        //   name: "Crud",
+        //   value: "crud",
+        //   description: "Creates model, service, router and view",
+        // },
       ],
     });
   } catch (error) {

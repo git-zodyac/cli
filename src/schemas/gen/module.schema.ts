@@ -13,22 +13,26 @@ export function ModuleSchema(className: string): TModuleSchema {
         },
       ],
     },
-    {
-      kind: StructureKind.ImportDeclaration,
-      moduleSpecifier: "env.z",
-      namedImports: [
-        {
-          kind: StructureKind.ImportSpecifier,
-          name: "zEnv",
-        },
-      ],
-    },
     "\n",
     {
       kind: StructureKind.Class,
       isExported: true,
-      extends: "Module<typeof zEnv>",
+      decorators: [
+        {
+          kind: StructureKind.Decorator,
+          name: "Module",
+          arguments: [],
+        },
+      ],
       name: className,
+      methods: [
+        {
+          kind: StructureKind.Method,
+          name: "onInit",
+          parameters: [],
+          statements: `this.logger.info('${className} initialized!')`,
+        },
+      ],
     },
   ];
 }

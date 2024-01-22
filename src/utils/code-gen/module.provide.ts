@@ -11,9 +11,13 @@ export async function ProvideInModule(
   const { ts } = prj;
 
   const file = ts.getSourceFileOrThrow(target_path);
-  const decorator = file
-    .getFirstChildByKindOrThrow(SyntaxKind.ClassDeclaration)
-    .getDecorator("Provide");
+  const class_dec = file.getFirstChildByKindOrThrow(
+    SyntaxKind.ClassDeclaration,
+  );
+  const decorator =
+    class_dec.getDecorator("Module") ??
+    class_dec.getDecorator("RootModule") ??
+    class_dec.getDecoratorOrThrow("LeafModule");
 
   for (const { modules, path } of imports) {
     file.addImportDeclaration({
@@ -22,32 +26,23 @@ export async function ProvideInModule(
     });
   }
 
-  if (!decorator) {
-    file.addImportDeclaration({
-      moduleSpecifier: "@zodyac/core",
-      namedImports: ["Provide"],
-    });
-
-    const target = file.getFirstChildByKindOrThrow(SyntaxKind.ClassDeclaration);
-
-    target.addDecorator({
-      name: "Provide",
-      arguments: [provide],
-    });
-  } else {
-    const decorator_arg = decorator.getArguments();
-    if (decorator_arg.length) {
-      const arg = decorator_arg[0];
-      if (!arg.isKind(SyntaxKind.ArrayLiteralExpression)) {
-        arg.replaceWithText(`[${arg.getText()}]`);
-      }
-      const reargs = decorator.getArguments();
-      reargs[0]
+  const decorator_arg = decorator.getArguments();
+  if (decorator_arg.length) {
+    const arg = decorator_arg[0];
+    const obj = arg.asKindOrThrow(SyntaxKind.ObjectLiteralExpression);
+    const providers = obj.getProperty("providers");
+    if (providers) {
+      providers
         .asKindOrThrow(SyntaxKind.ArrayLiteralExpression)
         .addElement(provide);
     } else {
-      decorator.addArgument(provide);
+      obj.addPropertyAssignment({
+        name: "providers",
+        initializer: `[${provide}]`,
+      });
     }
+  } else {
+    decorator.addArgument(`{ providers: [${provide}], }`);
   }
 
   file.formatText();

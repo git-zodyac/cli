@@ -2,7 +2,6 @@ import { RoutesSchema } from "../../schemas/gen/router.schema.js";
 import { ModuleSchema } from "../../schemas/gen/module.schema.js";
 import { GenerateFile } from "../../utils/code-gen/generate.file.js";
 import { ProvideInModule } from "../../utils/code-gen/module.provide.js";
-import { ProvideInRoot } from "../../utils/code-gen/root.provide.js";
 import { ProvideInRouter } from "./helpers/express.routes.js";
 import { throwError } from "../../view/errors.view.js";
 import { fileAdded } from "../../view/file.view.js";
@@ -43,27 +42,19 @@ export class Generator {
           `Providing module ${display(name)} to ${chalk.blue(opts.provide)}`,
         );
 
-        if (opts.provide === "root") {
-          const import_path = path.replace(".ts", "");
-          await ProvideInRoot(this.project, m_name, [
-            {
-              modules: [m_name],
-              path: import_path,
-            },
-          ]);
-        } else {
-          const module_path = this.project.src_path(opts.provide);
-          const module_folder = join(module_path, "..");
-          const relative_path = relative(module_folder, abs_path);
-          const import_path = relative_path.replace(".ts", "");
+        if (opts.provide === "root") opts.provide = "app.module.ts";
 
-          await ProvideInModule(this.project, module_path, m_name, [
-            {
-              modules: [m_name],
-              path: import_path,
-            },
-          ]);
-        }
+        const module_path = this.project.src_path(opts.provide);
+        const module_folder = join(module_path, "..");
+        const relative_path = relative(module_folder, abs_path);
+        const import_path = relative_path.replace(".ts", "");
+
+        await ProvideInModule(this.project, module_path, m_name, [
+          {
+            modules: [m_name],
+            path: import_path,
+          },
+        ]);
 
         this.progress.succeed(
           `Module ${display(name)} provided to ${chalk.blue(opts.provide)}`,

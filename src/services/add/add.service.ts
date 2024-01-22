@@ -18,6 +18,8 @@ export class Adder {
 
   async express() {
     try {
+      throw new Error("Express is not supported by this version of CLI");
+
       this.progress.start("Adding Express module");
       // TODO: check if same router module is installed
 
