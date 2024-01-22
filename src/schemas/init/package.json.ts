@@ -52,7 +52,7 @@ export function packageJSON(
       ...DEPS,
     },
     devDependencies: {
-      "@zodyac/cli": "^1.0.0", // TODO: `^${major_version}.0.0`,
+      "@zodyac/cli": `^${major_version}.0.0`,
       ...devDeps,
     },
   };

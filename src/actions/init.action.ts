@@ -4,7 +4,8 @@ import { InitInput } from "../services/init/init.config.js";
 import { Adder } from "../services/add/add.service.js";
 import { throwError } from "../view/errors.view.js";
 import { Action } from "../utils/action/action.js";
-import { input, confirm } from "@inquirer/prompts";
+import { input } from "@inquirer/prompts";
+// TODO: import { input, confirm } from "@inquirer/prompts";
 import { join } from "path";
 
 export class Initialize extends Action {
@@ -27,12 +28,12 @@ export class Initialize extends Action {
       args.project = await askProjectName();
     }
 
-    if (args.router == undefined) {
-      const useRouter = await addRouterPrompt();
-      args.router = useRouter ? "express" : undefined;
-    } else {
-      args.router = "express"; // TODO: Ask for router type
-    }
+    // if (args.router == undefined) {
+    //   const useRouter = await addRouterPrompt();
+    //   args.router = useRouter ? "express" : undefined;
+    // } else {
+    //   args.router = "express"; // TODO: Ask for router type
+    // }
 
     if (!args.project) {
       return throwError("No project name provided");
@@ -67,13 +68,14 @@ async function askProjectName(): Promise<string | undefined> {
     return undefined;
   }
 }
-async function addRouterPrompt(): Promise<boolean> {
-  try {
-    return await confirm({
-      message: "Would you like to add router module?",
-      default: true,
-    });
-  } catch (e) {
-    return false;
-  }
-}
+
+// async function addRouterPrompt(): Promise<boolean> {
+//   try {
+//     return await confirm({
+//       message: "Would you like to add router module?",
+//       default: true,
+//     });
+//   } catch (e) {
+//     return false;
+//   }
+// }
