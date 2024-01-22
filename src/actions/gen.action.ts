@@ -11,8 +11,8 @@ import { ServiceAction } from "./generate/service.action.js";
 import { ViewAction } from "./generate/view.action.js";
 import { CrudAction } from "./generate/crud.action.js";
 import { ModelAction } from "./generate/model.action.js";
-import { returnNotice } from "../view/success.view.js";
-import chalk from "chalk";
+// import { returnNotice } from "../view/success.view.js";
+// import chalk from "chalk";
 
 export class Generate extends Action {
   init() {
@@ -83,118 +83,123 @@ export class Generate extends Action {
       "Creating routers is not supported by this version of CLI.",
     );
 
-    const valid = zModuleName.safeParse(name);
-    if (!valid.success) {
-      throwError(valid.error.errors[0].message);
-      name = (await askName()) ?? "";
-    }
-    if (!name) return;
+    // const valid = zModuleName.safeParse(name);
+    // if (!valid.success) {
+    //   throwError(valid.error.errors[0].message);
+    //   name = (await askName()) ?? "";
+    // }
+    // if (!name) return;
 
-    const project = await ZProject.parse(this.cwd);
-    if (!project) return throwError("Could not find Zodyac project");
+    // const project = await ZProject.parse(this.cwd);
+    // if (!project) return throwError("Could not find Zodyac project");
 
-    if (!project.config.router) {
-      throwError("You first need to add API engine to your project.");
-      returnNotice(
-        `Run ${chalk.blue("zy add express")} to add Express.`,
-        "zy add express",
-      );
-      return;
-    }
+    // if (!project.config.router) {
+    //   throwError("You first need to add API engine to your project.");
+    //   returnNotice(
+    //     `Run ${chalk.blue("zy add express")} to add Express.`,
+    //     "zy add express",
+    //   );
+    //   return;
+    // }
 
-    if (!opts) {
-      opts = { nest: "root" };
-    } else if (!opts.nest) {
-      opts.nest = "root";
-    }
+    // if (!opts) {
+    //   opts = { nest: "root" };
+    // } else if (!opts.nest) {
+    //   opts.nest = "root";
+    // }
 
-    opts.nest = stripPath(opts.nest!);
+    // opts.nest = stripPath(opts.nest!);
 
-    const worker = new Generator(project);
-    await worker.router(name, opts);
+    // const worker = new Generator(project);
+    // await worker.router(name, opts);
   }
 
   async guard(name: string) {
     throw new Error("Creating guards is not supported by this version of CLI.");
 
-    const valid = zModuleName.safeParse(name);
-    if (!valid.success) {
-      throwError(valid.error.errors[0].message);
-      name = (await askName()) ?? "";
-    }
-    if (!name) return;
+    // const valid = zModuleName.safeParse(name);
+    // if (!valid.success) {
+    //   throwError(valid.error.errors[0].message);
+    //   name = (await askName()) ?? "";
+    // }
+    // if (!name) return;
 
-    const project = await ZProject.parse(this.cwd);
-    if (!project) return throwError("Could not find Zodyac project");
+    // const project = await ZProject.parse(this.cwd);
+    // if (!project) return throwError("Could not find Zodyac project");
 
-    const worker = new Generator(project);
-    await worker.guard(name);
+    // const worker = new Generator(project);
+    // await worker.guard(name);
   }
 
   async service(name: string, opts?: { skipDef?: boolean }) {
-    console.log(opts);
+    throw new Error(
+      "Creating services is not supported by this version of CLI.",
+    );
 
-    const valid = zModuleName.safeParse(name);
-    if (!valid.success) {
-      throwError(valid.error.errors[0].message);
-      name = (await askName()) ?? "";
-    }
-    if (!name) return;
+    // console.log(opts);
 
-    const project = await ZProject.parse(this.cwd);
-    if (!project) return throwError("Could not find Zodyac project");
+    // const valid = zModuleName.safeParse(name);
+    // if (!valid.success) {
+    //   throwError(valid.error.errors[0].message);
+    //   name = (await askName()) ?? "";
+    // }
+    // if (!name) return;
 
-    const worker = new Generator(project);
-    await worker.service(name);
+    // const project = await ZProject.parse(this.cwd);
+    // if (!project) return throwError("Could not find Zodyac project");
+
+    // const worker = new Generator(project);
+    // await worker.service(name);
   }
 
   async view(name: string, opts?: { service?: string }) {
     throw new Error("Creating view is not supported by this version of CLI.");
 
-    const valid = zModuleName.safeParse(name);
-    if (!valid.success) {
-      throwError(valid.error.errors[0].message);
-      name = (await askName()) ?? "";
-    }
-    if (!name) return;
+    // const valid = zModuleName.safeParse(name);
+    // if (!valid.success) {
+    //   throwError(valid.error.errors[0].message);
+    //   name = (await askName()) ?? "";
+    // }
+    // if (!name) return;
 
-    const project = await ZProject.parse(this.cwd);
-    if (!project) return throwError("Could not find Zodyac project");
+    // const project = await ZProject.parse(this.cwd);
+    // if (!project) return throwError("Could not find Zodyac project");
 
-    const worker = new Generator(project);
-    await worker.view(name);
+    // const worker = new Generator(project);
+    // await worker.view(name);
   }
 
   async crud(name: string) {
     throw new Error("Creating CRUD is not supported by this version of CLI.");
 
-    const valid = zModuleName.safeParse(name);
-    if (!valid.success) {
-      throwError(valid.error.errors[0].message);
-      name = (await askName()) ?? "";
-    }
-    if (!name) return;
+    // const valid = zModuleName.safeParse(name);
+    // if (!valid.success) {
+    //   throwError(valid.error.errors[0].message);
+    //   name = (await askName()) ?? "";
+    // }
+    // if (!name) return;
 
-    const project = await ZProject.parse(this.cwd);
-    if (!project) return throwError("Could not find Zodyac project");
+    // const project = await ZProject.parse(this.cwd);
+    // if (!project) return throwError("Could not find Zodyac project");
 
-    const worker = new Generator(project);
-    await worker.crud(name);
+    // const worker = new Generator(project);
+    // await worker.crud(name);
   }
 
   async model(name: string) {
-    const valid = zModuleName.safeParse(name);
-    if (!valid.success) {
-      throwError(valid.error.errors[0].message);
-      name = (await askName()) ?? "";
-    }
-    if (!name) return;
+    throw new Error("Creating models is not supported by this version of CLI.");
+    // const valid = zModuleName.safeParse(name);
+    // if (!valid.success) {
+    //   throwError(valid.error.errors[0].message);
+    //   name = (await askName()) ?? "";
+    // }
+    // if (!name) return;
 
-    const project = await ZProject.parse(this.cwd);
-    if (!project) return throwError("Could not find Zodyac project");
+    // const project = await ZProject.parse(this.cwd);
+    // if (!project) return throwError("Could not find Zodyac project");
 
-    const worker = new Generator(project);
-    await worker.model(name);
+    // const worker = new Generator(project);
+    // await worker.model(name);
   }
 }
 

@@ -33,8 +33,14 @@ export async function ProvideInModule(
     const providers = obj.getProperty("providers");
     if (providers) {
       providers
-        .asKindOrThrow(SyntaxKind.ArrayLiteralExpression)
+        .getDescendantsOfKind(SyntaxKind.ArrayLiteralExpression)[0]
         .addElement(provide);
+      // .asKindOrThrow(SyntaxKind.PropertyAssignment)
+      // .getChildAtIndex(0)
+      // .asKindOrThrow(SyntaxKind.Identifier)
+      // .getChildAtIndex(0)
+      // .asKindOrThrow(SyntaxKind.ArrayLiteralExpression)
+      // .addElement(provide);
     } else {
       obj.addPropertyAssignment({
         name: "providers",

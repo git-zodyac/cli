@@ -25,6 +25,19 @@ export function ModuleSchema(className: string): TModuleSchema {
         },
       ],
       name: className,
+      ctors: [
+        {
+          kind: StructureKind.Constructor,
+          parameters: [
+            {
+              kind: StructureKind.Parameter,
+              isReadonly: true,
+              name: "logger",
+              type: "Logger",
+            },
+          ],
+        },
+      ],
       methods: [
         {
           kind: StructureKind.Method,
