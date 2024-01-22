@@ -3,6 +3,10 @@ The CLI tool for creating and managing [Zodyac](https://zodyac.dev) projects.
 
 Please refer to the [Zodyac documentation](https://zodyac.dev) for more information.
 
+> [!WARNING]
+> This version CLI is currently in beta and is not yet ready for production use.
+> For now it supports only the creation of new projects, generation of modules, serving, building and watching.
+
 ## Installation
 ```bash
 npm install -g @zodyac/cli
@@ -37,14 +41,14 @@ Watches the current Zodyac project for changes and checks for errors.
 Generates a new Zodyac module.
 
 Options:
-- `type`: The type of module to generate. Can be one of `module`, `router`, ~~`service`~~, ~~`model`~~ or ~~`crud`~~.
+- `type`: The type of module to generate. Can be one of `module`, ~~`router`~~, ~~`service`~~, ~~`model`~~ or ~~`crud`~~.
 - `name`: The name of the module/router to generate.
 
 > Note: Only `module` and `router` are currently supported.
 
 ### `zy add <type>`
 Adds an extention to the current project. You can add:
-- `express`: Adds [Express.js](https://expressjs.com/) API Engine.
+- ~~`express`: Adds [Express.js](https://expressjs.com/) API Engine.~~
 - `eslint`: Adds `ESLint` and configuration.
 - `git`: Initializes `Git` repository and `.gitignore`.
 - `docker`: Creates `Dockerfile` and `.dockerignore`.
