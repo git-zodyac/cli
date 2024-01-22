@@ -11,6 +11,10 @@ export function ModuleSchema(className: string): TModuleSchema {
           kind: StructureKind.ImportSpecifier,
           name: "Module",
         },
+        {
+          kind: StructureKind.ImportSpecifier,
+          name: "Logger",
+        },
       ],
     },
     "\n",
